@@ -1,30 +1,19 @@
 package com.sparrow.mason.core.netty.dto;
 
 /**
+ * 封装客户端RPC请求信息
+ *
  * @author chengwei_shen
  * @date 2022/7/13 20:06
  **/
 public class RpcRequest {
-    RpcHeader header;
-    String nameSpace;
-    String serviceName;
-    byte[] data;
-
-    public RpcHeader getHeader() {
-        return header;
-    }
-
-    public void setHeader(RpcHeader header) {
-        this.header = header;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
+    private String nameSpace;
+    private String serviceName;
+    private String methodName;
+    /**
+     * 方法的参数，这边直接用byte接收，这样避免在序列化时重复序列化这部分数据
+     */
+    private byte[] parameters;
 
     public String getNameSpace() {
         return nameSpace;
@@ -42,14 +31,28 @@ public class RpcRequest {
         this.serviceName = serviceName;
     }
 
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public byte[] getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(byte[] parameters) {
+        this.parameters = parameters;
+    }
+
     /**
      * 构造服务签名
      *
-     * @param request
      * @return
      */
-    public static String buildServiceSign(RpcRequest request) {
-        String fmt = "%s:%s";
-        return String.format(request.getNameSpace(), request.getServiceName());
+    public String buildServiceSign() {
+        return nameSpace + ":" + serviceName;
     }
 }

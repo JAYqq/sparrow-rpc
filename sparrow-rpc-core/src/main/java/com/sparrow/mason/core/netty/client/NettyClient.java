@@ -3,7 +3,7 @@ package com.sparrow.mason.core.netty.client;
 import com.sparrow.mason.api.spi.Singleton;
 import com.sparrow.mason.core.RpcTransport;
 import com.sparrow.mason.core.TransportClient;
-import com.sparrow.mason.core.netty.decoder.RpcRequestEncoder;
+import com.sparrow.mason.core.netty.decoder.RpcCommandEncoder;
 import com.sparrow.mason.core.netty.decoder.RpcResponseDecoder;
 import com.sparrow.mason.core.netty.handler.RpcRequestHandler;
 import com.sparrow.mason.core.transport.netty.NettyTransport;
@@ -72,7 +72,10 @@ public class NettyClient implements TransportClient {
         return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) throws Exception {
-                channel.pipeline().addLast(new RpcResponseDecoder()).addLast(new RpcRequestEncoder()).addLast(new RpcRequestHandler());
+                channel.pipeline()
+                        .addLast(new RpcResponseDecoder())
+                        .addLast(new RpcCommandEncoder())
+                        .addLast(new RpcRequestHandler());
             }
         };
     }

@@ -1,5 +1,7 @@
 package com.sparrow.mason.core.netty.dto;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * @author chengwei_shen
  * @date 2022/7/13 20:06
@@ -40,5 +42,9 @@ public class RpcHeader {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getSize() {
+        return version.getBytes(StandardCharsets.UTF_8).length + traceId.getBytes(StandardCharsets.UTF_8).length + type.getBytes(StandardCharsets.UTF_8).length;
     }
 }

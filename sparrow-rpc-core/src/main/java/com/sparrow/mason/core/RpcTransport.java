@@ -1,6 +1,6 @@
 package com.sparrow.mason.core;
 
-import com.sparrow.mason.core.netty.dto.RpcRequest;
+import com.sparrow.mason.core.netty.dto.RpcCommand;
 
 /**
  * @author chengwei_shen
@@ -13,5 +13,5 @@ public interface RpcTransport {
      * @param request 具体请求体
      * @return response
      */
-    Object send(RpcRequest request);
+    Object send(RpcCommand request);
 }

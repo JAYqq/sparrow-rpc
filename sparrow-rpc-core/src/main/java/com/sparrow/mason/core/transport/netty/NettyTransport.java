@@ -1,7 +1,7 @@
 package com.sparrow.mason.core.transport.netty;
 
 import com.sparrow.mason.core.RpcTransport;
-import com.sparrow.mason.core.netty.dto.RpcRequest;
+import com.sparrow.mason.core.netty.dto.RpcCommand;
 import com.sparrow.mason.core.netty.dto.RpcResponse;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class NettyTransport implements RpcTransport {
     }
 
     @Override
-    public Object send(RpcRequest request) {
+    public Object send(RpcCommand request) {
         if (!channel.isActive()) {
             throw new IllegalStateException("Unhealthy channel state");
         }
