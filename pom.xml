@@ -70,6 +70,31 @@
                 <version>${netty.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.sparrow.mason</groupId>
+                <artifactId>sparrow-rpc-nameserver</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sparrow.mason</groupId>
+                <artifactId>sparrow-rpc-api</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sparrow.mason</groupId>
+                <artifactId>sparrow-rpc-core</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sparrow.mason</groupId>
+                <artifactId>sparrow-rpc-server</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sparrow.mason</groupId>
+                <artifactId>sparrow-rpc-client</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib</artifactId>
                 <version>${cglib-version}</version>
