@@ -1,0 +1,71 @@
+package com.sparrow.mason.core.client.proxy;
+
+import com.sparrow.mason.api.ServiceMetaInfo;
+import com.sparrow.mason.core.RpcTransport;
+import com.sparrow.mason.core.client.CommandTypes;
+import com.sparrow.mason.core.netty.dto.*;
+import com.sparrow.mason.core.serialize.SerializeSupport;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
+import java.lang.reflect.Method;
+import java.util.UUID;
+
+/**
+ * @author chengweishen
+ * @date 2022/7/17 11:13
+ */
+public class CglibRpcProxy implements MethodInterceptor {
+    private Class clazz;
+    private ServiceMetaInfo metaInfo;
+
+    private RpcTransport rpcTransport;
+
+    public CglibRpcProxy(Class clz, ServiceMetaInfo metaInfo, RpcTransport rpcTransport) {
+        this.clazz = clz;
+        this.metaInfo = metaInfo;
+        this.rpcTransport = rpcTransport;
+    }
+
+    public CglibRpcProxy() {
+    }
+
+    private Enhancer enhancer = new Enhancer();
+
+    public Object getProxy() {
+        //设置需要创建子类的类
+        enhancer.setSuperclass(clazz);
+        enhancer.setCallback(this);
+        return enhancer.create();
+    }
+
+    @Override
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+        RpcRequest rpcRequest = new RpcRequest();
+        rpcRequest.setNameSpace(metaInfo.getNameSpace());
+        rpcRequest.setServiceName(metaInfo.getServiceName());
+        rpcRequest.setMethodName(method.getName());
+        rpcRequest.setParameters(SerializeSupport.serialize(objects));
+        return callRemoteService(rpcRequest);
+    }
+
+    private Object callRemoteService(RpcRequest request) {
+        RpcCommand rpcCommand = new RpcCommand();
+        RpcHeader header = new RpcHeader();
+        header.setType(CommandTypes.RPC_REQUEST.getType());
+        header.setVersion("v1.0");
+        header.setTraceId(UUID.randomUUID().toString());
+        rpcCommand.setHeader(header);
+        rpcCommand.setData(SerializeSupport.serialize(request));
+        try {
+            RpcResponse rpcResponse = rpcTransport.send(rpcCommand).get();
+            if (RspCode.SUCCESS.getCode() != rpcResponse.getCode()) {
+                throw new RuntimeException(rpcResponse.getErrorMsg());
+            }
+            return SerializeSupport.parse(rpcResponse.getData());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

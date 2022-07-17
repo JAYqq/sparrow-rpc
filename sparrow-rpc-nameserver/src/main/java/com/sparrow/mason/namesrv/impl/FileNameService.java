@@ -22,16 +22,16 @@ public class FileNameService implements NameService {
     }
 
     @Override
-    public void registerServer(String serviceName, URI uri) {
+    public void registerServer(String serviceSign, URI uri) {
     }
 
     @Override
-    public void unregisterServer(String serviceName, URI uri) {
+    public void unregisterServer(String serviceSign, URI uri) {
 
     }
 
     @Override
-    public URI seekService(String serviceName) {
+    public URI seekService(String serviceSign) {
         return null;
     }
 }

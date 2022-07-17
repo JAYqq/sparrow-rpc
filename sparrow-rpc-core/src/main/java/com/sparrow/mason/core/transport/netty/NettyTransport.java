@@ -23,7 +23,7 @@ public class NettyTransport implements RpcTransport {
     }
 
     @Override
-    public Object send(RpcCommand request) {
+    public CompletableFuture<RpcResponse> send(RpcCommand request) {
         if (!channel.isActive()) {
             throw new IllegalStateException("Unhealthy channel state");
         }

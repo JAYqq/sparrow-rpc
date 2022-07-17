@@ -3,6 +3,7 @@ package com.sparrow.mason.core.netty.client;
 import com.sparrow.mason.api.spi.Singleton;
 import com.sparrow.mason.core.RpcTransport;
 import com.sparrow.mason.core.TransportClient;
+import com.sparrow.mason.core.netty.decoder.RpcCommandDecoder;
 import com.sparrow.mason.core.netty.decoder.RpcCommandEncoder;
 import com.sparrow.mason.core.netty.decoder.RpcResponseDecoder;
 import com.sparrow.mason.core.netty.handler.RpcRequestHandler;
@@ -13,7 +14,7 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.sctp.nio.NioSctpChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class NettyClient implements TransportClient {
 
     private Bootstrap buildBoostrap(EventLoopGroup ioEventGroup, ChannelHandler channelHandler) {
         Bootstrap bootstrap = new Bootstrap();
-        bootstrap.channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSctpChannel.class).group(ioEventGroup).handler(channelHandler).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
+        bootstrap.channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class).group(ioEventGroup).handler(channelHandler).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
         return bootstrap;
     }
 

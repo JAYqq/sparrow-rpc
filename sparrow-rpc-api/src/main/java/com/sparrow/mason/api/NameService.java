@@ -13,18 +13,18 @@ public interface NameService {
     /**
      * 服务注册
      *
-     * @param serviceName
+     * @param serviceSign
      * @param uri
      */
-    void registerServer(String serviceName, URI uri);
+    void registerServer(String serviceSign, URI uri);
 
     /**
      * 服务下线
      */
-    void unregisterServer(String serviceName, URI uri);
+    void unregisterServer(String serviceSign, URI uri);
 
     /**
      * 服务查询
      */
-    URI seekService(String serviceName);
+    URI seekService(String serviceSign);
 }

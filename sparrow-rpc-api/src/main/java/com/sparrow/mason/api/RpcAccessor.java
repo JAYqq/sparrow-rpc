@@ -22,12 +22,12 @@ public interface RpcAccessor extends Closeable {
     /**
      * 获取远程服务代理类
      *
-     * @param serviceName 服务名
-     * @param clazz       接口
-     * @param <T>         服务类型
+     * @param metaInfo 服务元信息
+     * @param clazz    接口
+     * @param <T>      服务类型
      * @return 服务实例
      */
-    <T> T getRemoteService(String serviceName, Class<T> clazz);
+    <T> T getRemoteService(ServiceMetaInfo metaInfo, Class<T> clazz);
 
     /**
      * 注册RPC服务

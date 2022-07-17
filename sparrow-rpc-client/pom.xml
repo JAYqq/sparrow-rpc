@@ -24,5 +24,13 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.sparrow.mason</groupId>
+            <artifactId>sparrow-rpc-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sparrow.mason</groupId>
+            <artifactId>sparrow-rpc-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

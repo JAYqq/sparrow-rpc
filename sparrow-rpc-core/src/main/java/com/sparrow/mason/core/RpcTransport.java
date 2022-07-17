@@ -1,6 +1,9 @@
 package com.sparrow.mason.core;
 
 import com.sparrow.mason.core.netty.dto.RpcCommand;
+import com.sparrow.mason.core.netty.dto.RpcResponse;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author chengwei_shen
@@ -13,5 +16,5 @@ public interface RpcTransport {
      * @param request 具体请求体
      * @return response
      */
-    Object send(RpcCommand request);
+    CompletableFuture<RpcResponse> send(RpcCommand request);
 }

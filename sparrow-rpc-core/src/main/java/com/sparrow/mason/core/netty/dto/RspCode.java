@@ -8,7 +8,9 @@ package com.sparrow.mason.core.netty.dto;
  **/
 public enum RspCode {
     SUCCESS(1, "SUCCESS"),
-    ERROR(-1, "ERROR");
+    UNKNOWN_SERVICE(-1, "Unknown Service"),
+    ERROR(-2, "ERROR");
+
 
     RspCode(int code, String message) {
         this.code = code;
@@ -17,4 +19,20 @@ public enum RspCode {
 
     int code;
     String message;
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

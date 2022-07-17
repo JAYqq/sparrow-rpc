@@ -24,12 +24,10 @@
         <dependency>
             <groupId>com.sparrow.mason</groupId>
             <artifactId>sparrow-rpc-api</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.sparrow.mason</groupId>
             <artifactId>sparrow-rpc-nameserver</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
