@@ -10,7 +10,7 @@ public class RpcResponse implements Serializable {
     RpcHeader header;
     int code;
     String errorMsg;
-    byte[] data;
+    Object data;
 
     public RpcHeader getHeader() {
         return header;
@@ -36,11 +36,11 @@ public class RpcResponse implements Serializable {
         this.errorMsg = errorMsg;
     }
 
-    public byte[] getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public void setData(Object data) {
         this.data = data;
     }
 }

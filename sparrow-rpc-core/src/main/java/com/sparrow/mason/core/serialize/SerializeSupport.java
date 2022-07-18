@@ -1,10 +1,8 @@
 package com.sparrow.mason.core.serialize;
 
 import com.sparrow.mason.api.spi.SpiSupport;
-import com.sparrow.mason.core.netty.dto.RpcRequest;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -27,8 +25,34 @@ public class SerializeSupport {
         });
     }
 
+    /**
+     * 默认序列化
+     *
+     * @param t
+     * @param <T>
+     * @return
+     */
     public static <T> byte[] serialize(T t) {
         Serializer<T> serializer = (Serializer<T>) classSerializerMap.get(t.getClass());
+        if (Objects.isNull(serializer)) {
+            throw new IllegalArgumentException(String.format("Cannot find correct serializer for class:%s", t.getClass()));
+        }
+        ByteBuffer buffer = ByteBuffer.allocate(serializer.getSize(t) + 1);
+        //先放上类型
+        buffer.put(serializer.getType());
+        return serializer.serialize(t, buffer);
+    }
+
+    /**
+     * 指定clazz序列化
+     *
+     * @param t
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> byte[] serialize(T t, Class clazz) {
+        Serializer<T> serializer = (Serializer<T>) classSerializerMap.get(clazz);
         if (Objects.isNull(serializer)) {
             throw new IllegalArgumentException(String.format("Cannot find correct serializer for class:%s", t.getClass()));
         }

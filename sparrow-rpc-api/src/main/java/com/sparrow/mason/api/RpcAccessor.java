@@ -32,12 +32,13 @@ public interface RpcAccessor extends Closeable {
     /**
      * 注册RPC服务
      *
-     * @param service 服务实例
-     * @param clazz   服务接口类
-     * @param <T>     类型
+     * @param serviceSign 服务签名
+     * @param service     服务实例
+     * @param clazz       服务接口类
+     * @param <T>         类型
      * @return 服务地址
      */
-    <T> URI addRpcService(T service, Class<T> clazz);
+    <T> URI addRpcService(String serviceSign, T service, Class<T> clazz);
 
     /**
      * 启动RPC服务

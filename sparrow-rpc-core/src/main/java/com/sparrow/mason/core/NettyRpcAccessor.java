@@ -2,16 +2,16 @@ package com.sparrow.mason.core;
 
 import com.sparrow.mason.api.NameService;
 import com.sparrow.mason.api.RpcAccessor;
+import com.sparrow.mason.api.ServiceMetaInfo;
 import com.sparrow.mason.api.spi.SpiSupport;
 import com.sparrow.mason.core.client.ProxyFactory;
-import com.sparrow.mason.api.ServiceMetaInfo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.net.UnknownHostException;
+import java.util.Objects;
 
 /**
  * Accessor的主要功能在于对外提供统一的API去访问RPC核心相关的方法，控制权限收口，
@@ -20,6 +20,7 @@ import java.net.UnknownHostException;
  * @author chengwei_shen
  * @date 2022/7/13 15:59
  **/
+@Slf4j
 public class NettyRpcAccessor implements RpcAccessor {
     private final int port = 8888;
 
@@ -37,29 +38,45 @@ public class NettyRpcAccessor implements RpcAccessor {
     }
 
     @Override
-    public <T> URI addRpcService(T service, Class<T> clazz) {
+    public <T> URI addRpcService(String serviceSign, T service, Class<T> clazz) {
+        //服务实例注册
+        ServiceHub.getInstance().addService(serviceSign, service);
+        //服务URI注册
+        NameService nameService = SpiSupport.load(NameService.class);
+        URI localUri = getLocalUri();
+        if (Objects.isNull(localUri)) {
+            throw new IllegalStateException("Get local uri fail");
+        }
+        nameService.registerServer(serviceSign, localUri);
         return null;
     }
 
     @Override
     public Closeable start() {
-        return null;
+        TransportServer server = SpiSupport.load(TransportServer.class);
+        server.start();
+        return server;
     }
 
     @Override
-    public void close() throws IOException {
-
+    public void close() {
+        TransportServer server = SpiSupport.load(TransportServer.class);
+        server.close();
     }
 
     /**
      * 获取本地uri
      *
      * @return 本地uri
-     * @throws UnknownHostException
      */
-    private URI getLocalUri() throws UnknownHostException {
-        InetAddress address = InetAddress.getLocalHost();
-        String hostAddress = address.getHostAddress();
-        return URI.create("rpc://" + hostAddress + ":" + port);
+    private URI getLocalUri() {
+        try {
+            InetAddress address = InetAddress.getLocalHost();
+            String hostAddress = address.getHostAddress();
+            return URI.create("rpc://" + hostAddress + ":" + port);
+        } catch (Exception e) {
+            log.warn("Get local uri fail", e);
+        }
+        return null;
     }
 }

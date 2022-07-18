@@ -7,6 +7,7 @@ import com.sparrow.mason.core.netty.dto.RpcResponse;
 import com.sparrow.mason.core.netty.dto.RspCode;
 import com.sparrow.mason.core.serialize.SerializeSupport;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,8 @@ import java.util.Objects;
  * @date 2022/7/14 11:44
  **/
 @Slf4j
+//这个表示这个handler在每个channel中进行共享，可参考https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/Netty%20%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E5%89%96%E6%9E%90%E4%B8%8E%20RPC%20%E5%AE%9E%E8%B7%B5-%E5%AE%8C/30%20%20%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93%EF%BC%9ANetty%20%E5%9C%A8%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5.md
+@ChannelHandler.Sharable
 public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcCommand> {
     /**
      * 进行真正方法调用
@@ -33,9 +36,9 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcCommand> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcCommand command) throws Exception {
         RpcResponse response = invokeService(command);
-        channelHandlerContext.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture->{
-            if(!channelFuture.isSuccess()){
-                log.warn("Write Channel Error",channelFuture.cause());
+        channelHandlerContext.writeAndFlush(response).addListener((ChannelFutureListener) channelFuture -> {
+            if (!channelFuture.isSuccess()) {
+                log.warn("Write Channel Error", channelFuture.cause());
                 channelHandlerContext.channel().close();
             }
         });
@@ -70,12 +73,8 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcCommand> {
     }
 
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        super.userEventTriggered(ctx, evt);
-    }
-
-    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        super.exceptionCaught(ctx, cause);
+        log.warn(cause.getMessage());
+        ctx.close();
     }
 }

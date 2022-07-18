@@ -63,7 +63,7 @@ public class CglibRpcProxy implements MethodInterceptor {
             if (RspCode.SUCCESS.getCode() != rpcResponse.getCode()) {
                 throw new RuntimeException(rpcResponse.getErrorMsg());
             }
-            return SerializeSupport.parse(rpcResponse.getData());
+            return rpcResponse.getData();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

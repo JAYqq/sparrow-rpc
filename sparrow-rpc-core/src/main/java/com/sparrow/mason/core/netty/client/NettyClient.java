@@ -3,10 +3,10 @@ package com.sparrow.mason.core.netty.client;
 import com.sparrow.mason.api.spi.Singleton;
 import com.sparrow.mason.core.RpcTransport;
 import com.sparrow.mason.core.TransportClient;
-import com.sparrow.mason.core.netty.decoder.RpcCommandDecoder;
 import com.sparrow.mason.core.netty.decoder.RpcCommandEncoder;
 import com.sparrow.mason.core.netty.decoder.RpcResponseDecoder;
 import com.sparrow.mason.core.netty.handler.RpcRequestHandler;
+import com.sparrow.mason.core.netty.handler.RpcResponseHandler;
 import com.sparrow.mason.core.transport.netty.NettyTransport;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -76,7 +76,7 @@ public class NettyClient implements TransportClient {
                 channel.pipeline()
                         .addLast(new RpcResponseDecoder())
                         .addLast(new RpcCommandEncoder())
-                        .addLast(new RpcRequestHandler());
+                        .addLast(new RpcResponseHandler());
             }
         };
     }

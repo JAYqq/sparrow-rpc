@@ -26,7 +26,10 @@ public class ObjectSerializer implements Serializer<Object> {
 
     @Override
     public Object parse(ByteBuffer buffer) {
-        return toObject(buffer.array());
+        byte[] oriArr = buffer.array();
+        byte[] tmpArr = new byte[oriArr.length-1];
+        System.arraycopy(oriArr, 1, tmpArr, 0, oriArr.length-1);
+        return toObject(tmpArr);
     }
 
     @Override
