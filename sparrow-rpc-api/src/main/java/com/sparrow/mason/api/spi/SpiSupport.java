@@ -29,9 +29,7 @@ public class SpiSupport {
                 .map(SpiSupport::singletonFilter).collect(Collectors.toList());
     }
 
-    @SuppressWarnings("unchecked")
     private static <S> S singletonFilter(S service) {
-
         if (service.getClass().isAnnotationPresent(Singleton.class)) {
             String className = service.getClass().getCanonicalName();
             Object singletonInstance = singletonServices.putIfAbsent(className, service);

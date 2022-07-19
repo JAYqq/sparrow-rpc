@@ -12,6 +12,10 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Objects;
+
 /**
  * @author chengwei_shen
  * @date 2022/7/18 17:47
@@ -20,15 +24,25 @@ public class NettyServer implements TransportServer {
     private final int port = 9999;
     private EventLoopGroup acceptEventGroup;
     private EventLoopGroup workerEventGroup;
+    private Channel channel;
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         //专门处理连接的group，相当于多路复用的监听线程
         acceptEventGroup = buildEventGroup();
         //处理io事件的worker
         workerEventGroup = buildEventGroup();
         ChannelHandler channelHandler = buildChannelHandler();
         ServerBootstrap serverBootstrap = buildBoostrap(acceptEventGroup, workerEventGroup, channelHandler);
+        //绑定host和端口
+        bindChannel(serverBootstrap);
+    }
+
+    private void bindChannel(ServerBootstrap serverBootstrap) throws InterruptedException, UnknownHostException {
+        InetAddress address = InetAddress.getLocalHost();
+        this.channel = serverBootstrap.bind(address.getHostAddress(), port)
+                .sync()
+                .channel();
     }
 
     private ServerBootstrap buildBoostrap(EventLoopGroup acceptLoopGroup, EventLoopGroup workerEventGroup, ChannelHandler channelHandler) {
@@ -65,6 +79,14 @@ public class NettyServer implements TransportServer {
 
     @Override
     public void close() {
-
+        if (Objects.nonNull(acceptEventGroup)) {
+            acceptEventGroup.shutdownGracefully();
+        }
+        if (Objects.nonNull(workerEventGroup)) {
+            workerEventGroup.shutdownGracefully();
+        }
+        if (Objects.nonNull(channel)) {
+            channel.close();
+        }
     }
 }

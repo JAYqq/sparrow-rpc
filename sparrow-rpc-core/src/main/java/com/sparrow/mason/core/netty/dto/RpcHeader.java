@@ -1,12 +1,13 @@
 package com.sparrow.mason.core.netty.dto;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 /**
  * @author chengwei_shen
  * @date 2022/7/13 20:06
  **/
-public class RpcHeader {
+public class RpcHeader implements Serializable {
     /**
      * 版本号
      */

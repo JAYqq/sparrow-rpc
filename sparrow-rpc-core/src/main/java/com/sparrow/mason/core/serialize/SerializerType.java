@@ -9,7 +9,8 @@ package com.sparrow.mason.core.serialize;
 public enum SerializerType {
     RPC_REQUEST(1),
     TYPE_OBJECT(2),
-    TYPE_OBJECT_ARRAY(3);
+    TYPE_OBJECT_ARRAY(3),
+    HESSIAN(4);
 
     SerializerType(int type) {
         this.type = type;

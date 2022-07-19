@@ -25,7 +25,6 @@ public interface Serializer<T> {
     /**
      * 反序列化
      *
-     * @param bytes 字节流
      * @return
      */
     T parse(ByteBuffer buffer);

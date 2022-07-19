@@ -1,4 +1,4 @@
-package com.sparrow.mason.core.client;
+package com.sparrow.mason.core.netty.dto;
 
 /**
  * @author chengweishen
@@ -6,7 +6,8 @@ package com.sparrow.mason.core.client;
  */
 public enum CommandTypes {
 
-    RPC_REQUEST("RPC_REQUEST");
+    RPC_REQUEST("RPC_REQUEST"),
+    RPC_RESPONSE("RPC_RESPONSE");
 
     CommandTypes(String type) {
         this.type = type;

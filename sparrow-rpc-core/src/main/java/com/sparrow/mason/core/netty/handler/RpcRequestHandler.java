@@ -1,11 +1,9 @@
 package com.sparrow.mason.core.netty.handler;
 
 import com.sparrow.mason.core.ServiceHub;
-import com.sparrow.mason.core.netty.dto.RpcCommand;
-import com.sparrow.mason.core.netty.dto.RpcRequest;
-import com.sparrow.mason.core.netty.dto.RpcResponse;
-import com.sparrow.mason.core.netty.dto.RspCode;
+import com.sparrow.mason.core.netty.dto.*;
 import com.sparrow.mason.core.serialize.SerializeSupport;
+import com.sparrow.mason.core.serialize.SerializerType;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -47,7 +45,9 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcCommand> {
     private RpcResponse invokeService(RpcCommand command) {
         RpcResponse response = new RpcResponse();
         response.setHeader(command.getHeader());
-        RpcRequest rpcRequest = SerializeSupport.parse(command.getData());
+        response.getHeader().setType(CommandTypes.RPC_RESPONSE.getType());
+        //指定用jdk序列化方式
+        RpcRequest rpcRequest = SerializeSupport.parse(command.getData(), SerializerType.TYPE_OBJECT_ARRAY.getType());
         Object[] args = SerializeSupport.parse(rpcRequest.getParameters());
         Object service = ServiceHub.getInstance().getService(rpcRequest.buildServiceSign());
         if (Objects.isNull(service)) {
@@ -63,7 +63,8 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcCommand> {
             }
             Method method = service.getClass().getMethod(rpcRequest.getMethodName(), argClass);
             Object ans = method.invoke(service, args);
-            response.setData(SerializeSupport.serialize(ans));
+            response.setData(ans);
+            response.setCode(RspCode.SUCCESS.getCode());
         } catch (Exception e) {
             log.warn("invoke error", e);
             response.setCode(RspCode.UNKNOWN_SERVICE.getCode());

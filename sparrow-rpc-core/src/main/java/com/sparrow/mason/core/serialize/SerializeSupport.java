@@ -1,6 +1,8 @@
 package com.sparrow.mason.core.serialize;
 
 import com.sparrow.mason.api.spi.SpiSupport;
+import com.sparrow.mason.core.netty.dto.RpcHeader;
+import com.sparrow.mason.core.netty.dto.RpcResponse;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
@@ -13,14 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2022/7/15 14:39
  **/
 public class SerializeSupport {
-    private static Map<Byte, Class<?>> typeClassMap = new ConcurrentHashMap<>();
+    private static Map<Byte, Serializer<?>> typeSerializerMap = new ConcurrentHashMap<>();
     private static Map<Class<?>, Serializer<?>> classSerializerMap = new ConcurrentHashMap<>();
 
     static {
         //加载所有序列器
         Collection<Serializer> serializers = SpiSupport.loadAll(Serializer.class);
         serializers.forEach(serializer -> {
-            typeClassMap.put(serializer.getType(), serializer.getSerializerClass());
+            typeSerializerMap.put(serializer.getType(), serializer);
             classSerializerMap.put(serializer.getSerializerClass(), serializer);
         });
     }
@@ -44,15 +46,15 @@ public class SerializeSupport {
     }
 
     /**
-     * 指定clazz序列化
+     * 指定type序列化
      *
      * @param t
-     * @param clazz
+     * @param type
      * @param <T>
      * @return
      */
-    public static <T> byte[] serialize(T t, Class clazz) {
-        Serializer<T> serializer = (Serializer<T>) classSerializerMap.get(clazz);
+    public static <T> byte[] serialize(T t, Byte type) {
+        Serializer<T> serializer = (Serializer<T>) typeSerializerMap.get(type);
         if (Objects.isNull(serializer)) {
             throw new IllegalArgumentException(String.format("Cannot find correct serializer for class:%s", t.getClass()));
         }
@@ -65,11 +67,28 @@ public class SerializeSupport {
     public static <E> E parse(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
         byte type = buffer.get();
-        Class<?> clazz = typeClassMap.get(type);
-        if (Objects.isNull(clazz)) {
+        Serializer<?> serializer = typeSerializerMap.get(type);
+        if (Objects.isNull(serializer)) {
             throw new IllegalArgumentException(String.format("Unknown type:%s", type));
         }
-        Serializer<?> serializer = classSerializerMap.get(clazz);
+        Object rs = serializer.parse(buffer);
+        return (E) rs;
+    }
+
+    /**
+     * 指定type解析
+     *
+     * @param bytes
+     * @param type
+     * @param <E>
+     * @return
+     */
+    public static <E> E parse(byte[] bytes, Byte type) {
+        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        Serializer<?> serializer = typeSerializerMap.get(type);
+        if (Objects.isNull(serializer)) {
+            throw new IllegalArgumentException(String.format("Unknown type:%s", type));
+        }
         Object rs = serializer.parse(buffer);
         return (E) rs;
     }

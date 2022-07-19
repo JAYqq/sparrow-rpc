@@ -7,6 +7,8 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 /**
+ * jdk序列化
+ *
  * @author chengwei_shen
  * @date 2022/7/11 15:05
  **/
@@ -27,8 +29,8 @@ public class ObjectSerializer implements Serializer<Object> {
     @Override
     public Object parse(ByteBuffer buffer) {
         byte[] oriArr = buffer.array();
-        byte[] tmpArr = new byte[oriArr.length-1];
-        System.arraycopy(oriArr, 1, tmpArr, 0, oriArr.length-1);
+        byte[] tmpArr = new byte[oriArr.length - 1];
+        System.arraycopy(oriArr, 1, tmpArr, 0, oriArr.length - 1);
         return toObject(tmpArr);
     }
 

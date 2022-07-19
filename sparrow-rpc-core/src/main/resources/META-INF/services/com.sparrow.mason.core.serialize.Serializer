@@ -1,3 +1,4 @@
 com.sparrow.mason.core.serialize.impl.RpcRequestSerializer
 com.sparrow.mason.core.serialize.impl.ObjectSerializer
 com.sparrow.mason.core.serialize.impl.ObjectArraysSerializer
+com.sparrow.mason.core.serialize.impl.HessianSerializer

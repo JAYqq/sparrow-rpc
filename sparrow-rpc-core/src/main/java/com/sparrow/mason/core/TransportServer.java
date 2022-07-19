@@ -7,7 +7,7 @@ import java.io.Closeable;
  * @date 2022/7/13 16:31
  **/
 public interface TransportServer extends Closeable {
-    void start();
+    void start() throws Exception;
     @Override
     void close();
 }

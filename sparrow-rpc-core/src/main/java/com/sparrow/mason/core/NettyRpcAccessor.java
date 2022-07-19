@@ -52,7 +52,7 @@ public class NettyRpcAccessor implements RpcAccessor {
     }
 
     @Override
-    public Closeable start() {
+    public Closeable start() throws Exception {
         TransportServer server = SpiSupport.load(TransportServer.class);
         server.start();
         return server;

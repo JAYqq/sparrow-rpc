@@ -2,9 +2,10 @@ package com.sparrow.mason.core.client.proxy;
 
 import com.sparrow.mason.api.ServiceMetaInfo;
 import com.sparrow.mason.core.RpcTransport;
-import com.sparrow.mason.core.client.CommandTypes;
+import com.sparrow.mason.core.netty.dto.CommandTypes;
 import com.sparrow.mason.core.netty.dto.*;
 import com.sparrow.mason.core.serialize.SerializeSupport;
+import com.sparrow.mason.core.serialize.SerializerType;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -46,7 +47,8 @@ public class CglibRpcProxy implements MethodInterceptor {
         rpcRequest.setNameSpace(metaInfo.getNameSpace());
         rpcRequest.setServiceName(metaInfo.getServiceName());
         rpcRequest.setMethodName(method.getName());
-        rpcRequest.setParameters(SerializeSupport.serialize(objects));
+        //指定用jdk序列化方式
+        rpcRequest.setParameters(SerializeSupport.serialize(objects, SerializerType.TYPE_OBJECT_ARRAY.getType()));
         return callRemoteService(rpcRequest);
     }
 
@@ -59,6 +61,7 @@ public class CglibRpcProxy implements MethodInterceptor {
         rpcCommand.setHeader(header);
         rpcCommand.setData(SerializeSupport.serialize(request));
         try {
+            //todo 这个get与RpcResponseHandler的complete可讲
             RpcResponse rpcResponse = rpcTransport.send(rpcCommand).get();
             if (RspCode.SUCCESS.getCode() != rpcResponse.getCode()) {
                 throw new RuntimeException(rpcResponse.getErrorMsg());

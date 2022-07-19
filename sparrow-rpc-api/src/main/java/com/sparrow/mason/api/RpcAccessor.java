@@ -43,6 +43,6 @@ public interface RpcAccessor extends Closeable {
     /**
      * 启动RPC服务
      */
-    Closeable start();
+    Closeable start() throws Exception;
 
 }
