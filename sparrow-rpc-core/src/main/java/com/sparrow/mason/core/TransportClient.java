@@ -2,6 +2,7 @@ package com.sparrow.mason.core;
 
 import java.io.Closeable;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author chengwei_shen
@@ -15,5 +16,5 @@ public interface TransportClient extends Closeable {
      * @param connectionTimeout
      * @return
      */
-    RpcTransport createTransport(InetSocketAddress address, long connectionTimeout);
+    RpcTransport createTransport(InetSocketAddress address, long connectionTimeout) throws InterruptedException, TimeoutException;
 }

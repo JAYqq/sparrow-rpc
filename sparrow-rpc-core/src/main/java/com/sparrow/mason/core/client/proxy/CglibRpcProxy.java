@@ -42,7 +42,7 @@ public class CglibRpcProxy implements MethodInterceptor {
     }
 
     @Override
-    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) {
         RpcRequest rpcRequest = new RpcRequest();
         rpcRequest.setNameSpace(metaInfo.getNameSpace());
         rpcRequest.setServiceName(metaInfo.getServiceName());

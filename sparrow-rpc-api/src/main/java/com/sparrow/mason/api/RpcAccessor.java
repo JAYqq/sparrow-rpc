@@ -4,6 +4,7 @@ import com.sparrow.mason.api.spi.SpiSupport;
 
 import java.io.Closeable;
 import java.net.URI;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author chengwei_shen
@@ -27,7 +28,7 @@ public interface RpcAccessor extends Closeable {
      * @param <T>      服务类型
      * @return 服务实例
      */
-    <T> T getRemoteService(ServiceMetaInfo metaInfo, Class<T> clazz);
+    <T> T getRemoteService(ServiceMetaInfo metaInfo, Class<T> clazz) throws InterruptedException, TimeoutException;
 
     /**
      * 注册RPC服务

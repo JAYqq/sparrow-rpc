@@ -1,1 +1,1 @@
-com.sparrow.mason.namesrv.impl.SimpleNameService
+com.sparrow.mason.namesrv.impl.FileNameService

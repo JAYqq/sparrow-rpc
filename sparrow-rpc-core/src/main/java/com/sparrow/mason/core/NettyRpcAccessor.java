@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.Objects;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Accessor的主要功能在于对外提供统一的API去访问RPC核心相关的方法，控制权限收口，
@@ -25,13 +26,13 @@ public class NettyRpcAccessor implements RpcAccessor {
     private final int port = 8888;
 
     @Override
-    public <T> T getRemoteService(ServiceMetaInfo metaInfo, Class<T> clazz) {
+    public <T> T getRemoteService(ServiceMetaInfo metaInfo, Class<T> clazz) throws InterruptedException, TimeoutException {
         NameService nameService = SpiSupport.load(NameService.class);
         String serviceSign = metaInfo.getServiceSign();
         URI uri = nameService.seekService(serviceSign);
         TransportClient transportClient = SpiSupport.load(TransportClient.class);
         InetSocketAddress address = new InetSocketAddress(uri.getHost(), uri.getPort());
-        RpcTransport transport = transportClient.createTransport(address, 3000);
+        RpcTransport transport = transportClient.createTransport(address, 300000);
         ProxyFactory proxyFactory = SpiSupport.load(ProxyFactory.class);
         proxyFactory.setRpcTransport(transport);
         return proxyFactory.createProxy(clazz, metaInfo);
@@ -55,6 +56,7 @@ public class NettyRpcAccessor implements RpcAccessor {
     public Closeable start() throws Exception {
         TransportServer server = SpiSupport.load(TransportServer.class);
         server.start();
+        log.info("---------Start Successfully--------");
         return server;
     }
 
@@ -72,7 +74,7 @@ public class NettyRpcAccessor implements RpcAccessor {
     private URI getLocalUri() {
         try {
             InetAddress address = InetAddress.getLocalHost();
-            String hostAddress = address.getHostAddress();
+            String hostAddress = "localhost";
             return URI.create("rpc://" + hostAddress + ":" + port);
         } catch (Exception e) {
             log.warn("Get local uri fail", e);

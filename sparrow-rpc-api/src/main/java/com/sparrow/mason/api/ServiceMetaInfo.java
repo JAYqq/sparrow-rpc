@@ -8,6 +8,14 @@ public class ServiceMetaInfo {
     String nameSpace;
     String serviceName;
 
+    public ServiceMetaInfo() {
+    }
+
+    public ServiceMetaInfo(String nameSpace, String serviceName) {
+        this.nameSpace = nameSpace;
+        this.serviceName = serviceName;
+    }
+
     public String getNameSpace() {
         return nameSpace;
     }
